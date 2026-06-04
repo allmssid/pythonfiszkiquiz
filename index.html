@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiszki i Quiz</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Fiszki i Quiz - Testy PDF</h1>
+
+<div class="tabs">
+<button onclick="showTab('flashcards')">Fiszki</button>
+<button onclick="showTab('quiz')">Quiz</button>
+</div>
+
+<div id="flashcards"></div>
+
+<div id="quiz" style="display:none">
+<h2>Quiz</h2>
+<div id="quizContainer"></div>
+<button onclick="checkQuiz()">Sprawdź wynik</button>
+<p id="result"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
