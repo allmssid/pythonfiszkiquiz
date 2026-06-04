@@ -7,6 +7,7 @@ function saveProgress(p){ localStorage.setItem(storageKey, JSON.stringify(p)); r
 function shuffle(arr){ return [...arr].sort(() => Math.random() - 0.5); }
 function uniqueCategories(){ return [...new Set(state.cards.map(c => c.category))]; }
 function escapeHtml(text){ return String(text).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function displayText(text){ return String(text).replace(/\\\//g, '/'); }
 
 async function init(){
   state.cards = await fetch('data/cards.json').then(r => r.json());
@@ -59,9 +60,9 @@ function startStage(stage, hardOnly=false){
 }
 function renderCard(){
   const card = state.pool[state.index];
-  $('question').textContent = card.id + ') ' + card.question;
+  $('question').textContent = card.id + ') ' + displayText(card.question);
   $('answer').textContent = card.answer;
-  $('explain').textContent = card.explain || '';
+  $('explain').textContent = displayText(card.explain || '');
   if(card.code){ $('codeBlock').textContent = card.code; $('codeBlock').classList.remove('hidden'); } else { $('codeBlock').classList.add('hidden'); }
   $('answer').classList.add('hidden'); $('explain').classList.add('hidden');
   $('showBtn').classList.remove('hidden');
@@ -90,7 +91,7 @@ function startQuiz(stage='all'){
 function renderQuiz(){
   const card = state.quizPool[state.quizIndex];
   state.answered = false;
-  $('quizQuestion').textContent = card.id + ') ' + card.question;
+  $('quizQuestion').textContent = card.id + ') ' + displayText(card.question);
   if(card.code){ $('quizCodeBlock').textContent = card.code; $('quizCodeBlock').classList.remove('hidden'); } else { $('quizCodeBlock').classList.add('hidden'); }
   $('quizCounter').textContent = `${state.quizIndex+1} / ${state.quizPool.length}`;
   $('quizScore').textContent = `${state.score} pkt`;
@@ -117,7 +118,7 @@ function chooseAnswer(btn, opt, card){
   if(opt === card.answer){ state.score++; btn.classList.add('correct'); }
   else btn.classList.add('wrong');
   $('quizScore').textContent = `${state.score} pkt`;
-  $('quizFeedback').innerHTML = `<b>Poprawna odpowiedź:</b> ${escapeHtml(card.answer)}<br>${escapeHtml(card.explain || '')}`;
+  $('quizFeedback').innerHTML = `<b>Poprawna odpowiedź:</b> ${escapeHtml(card.answer)}<br>${escapeHtml(displayText(card.explain || ''))}`;
   $('quizFeedback').classList.remove('hidden');
   $('quizNextBtn').textContent = state.quizIndex === state.quizPool.length - 1 ? 'Zakończ quiz' : 'Następne pytanie';
   $('quizNextBtn').classList.remove('hidden');
