@@ -3,63 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Języki interpretowane — fiszki i quiz</title>
-  <style>
-    *{box-sizing:border-box}:root{--bg:#0f172a;--card:#f8fafc;--muted:#cbd5e1;--line:#ffffff24;--blue:#60a5fa;--green:#22c55e;--red:#fb7185}
-    html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:#e5e7eb;min-height:100vh}
-    .bg{position:fixed;inset:0;background:radial-gradient(circle at top left,#4f46e566,transparent 34%),radial-gradient(circle at bottom right,#22c55e33,transparent 38%),linear-gradient(135deg,#111827,#020617 60%);z-index:-1}
-    .app{width:min(1100px,94vw);margin:0 auto;padding:34px 0 50px}.screen{display:none}.screen.active{display:block}
-    .hero{display:grid;grid-template-columns:1.6fr .8fr;gap:24px;align-items:center;padding:34px;border:1px solid #ffffff22;background:#ffffff10;border-radius:28px;box-shadow:0 24px 80px #0007;backdrop-filter:blur(14px)}
-    .eyebrow{text-transform:uppercase;letter-spacing:.14em;color:#93c5fd;font-size:12px;font-weight:900;margin:0 0 10px}.lead{font-size:18px;color:var(--muted);max-width:760px;line-height:1.6;margin:14px 0 0}
-    h1{font-size:clamp(34px,5.2vw,66px);line-height:1.03;margin:0;letter-spacing:-.045em}h2{margin:28px 0 16px;font-size:26px}button{border:0;border-radius:16px;padding:13px 18px;font-weight:900;cursor:pointer;background:#e5e7eb;color:#0f172a;transition:.2s}
-    button:hover{transform:translateY(-2px)}.ghost{background:#ffffff14;color:#e5e7eb;border:1px solid #ffffff26}.primary{background:var(--blue)}.success{background:var(--green)}.danger{background:var(--red)}.hidden{display:none!important}
-    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.stat{padding:20px;border-radius:22px;background:#020617aa;border:1px solid #ffffff1f}.stat span{font-size:36px;font-weight:1000;display:block}.stat small{color:#94a3b8;font-weight:800}
-    .stage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}.stage{border:1px solid var(--line);background:#ffffff12;border-radius:24px;padding:22px;text-align:left;color:inherit;min-height:150px}.stage:hover{background:#ffffff1c}.stage b{font-size:22px;display:block;margin-bottom:10px}.stage span{color:var(--muted);line-height:1.4}
-    .toolbar,.actions,.mini-panel,.topbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.toolbar{margin-top:18px}.topbar{justify-content:space-between;margin-bottom:18px}.topbar h2{margin:0}
-    .progress-wrap{height:12px;background:#020617aa;border-radius:999px;overflow:hidden;margin-bottom:22px}.progress{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green));transition:.25s}
-    .card{background:var(--card);color:#0f172a;border-radius:30px;padding:32px;box-shadow:0 24px 90px #0009;min-height:420px}.card-meta{display:flex;justify-content:space-between;gap:10px;color:#475569;font-weight:900;margin-bottom:24px}.card h1{font-size:clamp(28px,4vw,46px);margin-bottom:22px;color:#0f172a}
-    .answer{white-space:pre-wrap;line-height:1.58;font-size:18px;background:#e2e8f0;border-radius:22px;padding:22px;max-height:390px;overflow:auto;margin:20px 0;font-weight:700}.mini-panel{justify-content:center;margin-top:18px}.mini-panel button{background:#020617aa;color:#e5e7eb;border:1px solid #ffffff24}
-    .options{display:grid;gap:12px;margin-top:18px}.option{width:100%;text-align:left;background:#e2e8f0;color:#0f172a;border:2px solid transparent;border-radius:18px;padding:16px 18px;font-weight:900;line-height:1.35}.option:hover:not(:disabled){background:#cbd5e1}.option.correct{background:#bbf7d0;border-color:#22c55e}.option.wrong{background:#fecdd3;border-color:#fb7185}.option:disabled{cursor:default;transform:none}
-    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #ffffff24;background:#02061788;border-radius:999px;padding:10px 14px;color:#cbd5e1;font-weight:800}.empty{padding:24px;border:1px dashed #ffffff33;border-radius:22px;color:#cbd5e1;background:#ffffff0c}
-    @media(max-width:800px){.hero{grid-template-columns:1fr;padding:24px}.stats-grid{grid-template-columns:1fr}.card{padding:22px}.topbar{align-items:flex-start}}
-  </style>
+  <title>Języki interpretowane — nauka</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="bg"></div>
   <main class="app">
     <section id="start" class="screen active">
       <div class="hero">
-        <div><p class="eyebrow">Kolokwium • Języki interpretowane</p><h1>Ucz się aktywnie, nie przez samo czytanie.</h1></div>
+        <div>
+          <p class="eyebrow">Kolokwium • Języki interpretowane</p>
+          <h1>Ucz się aktywnie, nie przez samo czytanie.</h1>
+        </div>
         <p class="lead">Wybierz dział, przerabiaj fiszki, oznaczaj trudne pytania i sprawdź się w szybkim quizie.</p>
       </div>
-      <div class="stats-grid"><div class="stat"><span id="totalCards">0</span><small>pytań</small></div><div class="stat"><span id="knownCards">0</span><small>umiem</small></div><div class="stat"><span id="hardCards">0</span><small>trudne</small></div></div>
-      <h2>Wybierz etap</h2><div id="stages" class="stage-grid"></div>
-      <div class="toolbar"><button class="ghost" id="quizStartBtn">Szybki quiz</button><button class="ghost" id="resetStats">Wyczyść postęp</button></div>
+
+      <div class="stats-grid">
+        <div class="stat"><span id="totalCards">0</span><small>pytań</small></div>
+        <div class="stat"><span id="knownCards">0</span><small>umiem</small></div>
+        <div class="stat"><span id="hardCards">0</span><small>trudne</small></div>
+      </div>
+
+      <div class="section-head">
+        <h2>Wybierz etap</h2>
+        <div class="toolbar">
+          <button class="primary" id="quickQuizBtn">Szybki quiz</button>
+          <button class="ghost" id="resetStats">Wyczyść postęp</button>
+        </div>
+      </div>
+      <div id="stages" class="stage-grid"></div>
     </section>
+
     <section id="learn" class="screen">
-      <header class="topbar"><button class="back" id="backBtn">← Etapy</button><div><p class="eyebrow" id="modeLabel">Tryb nauki</p><h2 id="stageTitle">Dział</h2></div><button class="ghost" id="shuffleBtn">Losuj</button></header>
+      <header class="topbar">
+        <button class="back" id="backBtn">← Etapy</button>
+        <div>
+          <p class="eyebrow" id="modeLabel">Tryb nauki</p>
+          <h2 id="stageTitle">Dział</h2>
+        </div>
+        <button class="ghost" id="shuffleBtn">Losuj</button>
+      </header>
+
       <div class="progress-wrap"><div id="progress" class="progress"></div></div>
-      <div class="card"><div class="card-meta"><span id="counter">1 / 1</span><span id="categoryPill"></span></div><h1 id="question">Pytanie</h1><div id="answer" class="answer hidden"></div><div class="actions"><button id="showBtn" class="primary">Pokaż odpowiedź</button><button id="againBtn" class="danger hidden">Nie umiem</button><button id="okBtn" class="success hidden">Umiem</button></div></div>
-      <div class="mini-panel"><button id="prevBtn">Poprzednie</button><button id="nextBtn">Następne</button><button id="hardOnlyBtn">Powtarzaj trudne</button><button id="quizFromStageBtn">Quiz z tego działu</button></div>
+
+      <div class="card flashcard">
+        <div class="card-meta"><span id="counter">1 / 1</span><span id="categoryPill"></span></div>
+        <h1 id="question">Pytanie</h1>
+        <pre id="codeBlock" class="code hidden"></pre>
+        <div id="answer" class="answer hidden"></div>
+        <div id="explain" class="explain hidden"></div>
+        <div class="actions">
+          <button id="showBtn" class="primary">Pokaż odpowiedź</button>
+          <button id="againBtn" class="danger hidden">Nie umiem</button>
+          <button id="okBtn" class="success hidden">Umiem</button>
+        </div>
+      </div>
+
+      <div class="mini-panel">
+        <button id="prevBtn">Poprzednie</button>
+        <button id="nextBtn">Następne</button>
+        <button id="hardOnlyBtn">Powtarzaj trudne</button>
+        <button id="quizFromStageBtn">Quiz z tego działu</button>
+      </div>
     </section>
+
     <section id="quiz" class="screen">
-      <header class="topbar"><button class="back" id="quizBackBtn">← Etapy</button><div><p class="eyebrow">Tryb quizu</p><h2 id="quizTitle">Sprawdź się</h2></div><button class="ghost" id="restartQuizBtn">Od nowa</button></header>
+      <header class="topbar">
+        <button class="back" id="quizBackBtn">← Etapy</button>
+        <div>
+          <p class="eyebrow">Tryb quizu</p>
+          <h2 id="quizTitle">Sprawdź się</h2>
+        </div>
+        <button class="ghost" id="restartQuizBtn">Od nowa</button>
+      </header>
+
       <div class="progress-wrap"><div id="quizProgress" class="progress"></div></div>
-      <div class="card"><div class="card-meta"><span id="quizCounter">1 / 1</span><span id="quizScore">Wynik: 0</span></div><h1 id="quizQuestion">Pytanie</h1><div id="quizOptions" class="options"></div><div id="quizFeedback" class="answer hidden"></div><div class="actions"><button id="quizNextBtn" class="primary hidden">Następne pytanie</button></div></div>
+      <div class="card quiz-card">
+        <div class="card-meta"><span id="quizCounter">1 / 1</span><span id="quizScore">0 pkt</span></div>
+        <h1 id="quizQuestion">Pytanie</h1>
+        <pre id="quizCodeBlock" class="code hidden"></pre>
+        <div id="quizOptions" class="options"></div>
+        <div id="quizFeedback" class="feedback hidden"></div>
+        <button id="quizNextBtn" class="primary hidden">Następne pytanie</button>
+      </div>
     </section>
   </main>
-<script>
-const CARDS = [{"id": 1, "category": "Historia języków", "question": "Język programowania stworzony w 1995 roku przez Japończyka Yukihiro Matsumoto to:", "answer": "Ruby"}, {"id": 2, "category": "Historia języków", "question": "Język programowania, który powstał w 1987 roku, został stworzony przez Larry’ego Walla:", "answer": "Perl"}, {"id": 3, "category": "Historia języków", "question": "Język, który został stworzony przez Brendona Eicha w firmie Netscape w 1995 to:", "answer": "JavaScript"}, {"id": 4, "category": "Historia języków", "question": "Twórcą języka Python jest:", "answer": "Guido van Rossum"}, {"id": 5, "category": "Python", "question": "Jaką nazwę nosi zwyczajowo uchwyt do obiektu, który jest przekazywany do metody instancji (Python):", "answer": "self"}, {"id": 6, "category": "Python", "question": "Jaką nazwę nosi metoda inicjalizacyjna (Python):", "answer": "init()"}, {"id": 7, "category": "Python", "question": "Przykładem metody specjalnej jest (Python):", "answer": "str() (np. również init(), repr(), call())"}, {"id": 8, "category": "Python", "question": "Które metody specjalne pozwalają na przekonwertowanie obiektu na łańcuch znaków (Python):", "answer": "str() oraz repr()"}, {"id": 9, "category": "Python", "question": "Jaki błąd zawiera następujący kod (Python):", "answer": "Nie zawiera błędu (this może być nazwą parametru zamiast self)"}, {"id": 10, "category": "Python", "question": "Co zostanie wypisane na ekranie po wykonaniu następującego kodu (Python):", "answer": "TypeError"}, {"id": 11, "category": "Python", "question": "com = 2+2J, zmienna com jest w Pythonie typu:", "answer": "complex"}, {"id": 12, "category": "Python", "question": "a = True, zmienna a jest w Pythonie typu:", "answer": "bool"}, {"id": 13, "category": "Python", "question": "b = 1.0, zmienna b jest w Pythonie typu:", "answer": "float"}, {"id": 14, "category": "Python", "question": "c = (1), zmienna c jest w Pythonie typu:", "answer": "int"}, {"id": 15, "category": "Python", "question": "Jaka jest zawartość zmiennej s po wykonaniu następującego kodu (Python):", "answer": "TypeError"}, {"id": 16, "category": "Python", "question": "x = (1, 2, 3), x jest (Python):", "answer": "tuple"}, {"id": 17, "category": "Python", "question": "y = {'1': 4, '2': 3}, y jest (Python):", "answer": "dict"}, {"id": 18, "category": "Python", "question": "z = [1, 2, 3], z jest (Python):", "answer": "list"}, {"id": 19, "category": "Python", "question": "Funkcja, której głównym zadaniem jest przeźroczyste opakowanie innej funkcji lub klasy to, oznaczana symbolem @:", "answer": "Dekorator"}, {"id": 20, "category": "JavaScript", "question": "let x = /\\d+/g, x jest (JS):", "answer": "RegExp"}, {"id": 21, "category": "JavaScript", "question": "Są nieuporządkowaną kolekcją właściwości, które zawierają wartości typów podstawowych, innych obiektów lub funkcji (JS):", "answer": "Object"}, {"id": 22, "category": "JavaScript", "question": "Jaką wartość ma zmienna x po wykonaniu następującego kodu:", "answer": "undefined"}, {"id": 23, "category": "JavaScript", "question": "Po wykonaniu poniższego kodu (JS) z zawiera:", "answer": "1"}, {"id": 24, "category": "JavaScript", "question": "Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):", "answer": "true"}, {"id": 25, "category": "JavaScript", "question": "Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):", "answer": "false"}, {"id": 26, "category": "JavaScript", "question": "Wyrażenie regularne /\\d{4}/ dopasowuje do łańcucha:", "answer": "Dokładnie czterech cyfr"}, {"id": 27, "category": "JavaScript", "question": "Przy wyrażeniu regularnym /x+/ znak + oznacza:", "answer": "Jedno lub więcej wystąpień"}, {"id": 28, "category": "JavaScript", "question": "Przy wyrażeniu regularnym /x?/ znak ? oznacza:", "answer": "Zero lub jedno wystąpienie"}, {"id": 29, "category": "JavaScript", "question": "Połączenie obiektu funkcji z jej zasięgiem (wystarcza zbiór wiązań zmiennych wolnych) jest nazywane:", "answer": "Domknięciem (closure)"}, {"id": 30, "category": "JavaScript", "question": "Słowo let wyznacza w JS:", "answer": "Zasięg blokowy zmiennej"}];
-const state={cards:CARDS,pool:[],index:0,stage:'all',hardOnly:false}; const quiz={pool:[],index:0,score:0,answered:false,stage:'all'}; const $=id=>document.getElementById(id); const categories=['Historia języków','Python','JavaScript'];
-function loadProgress(){try{return JSON.parse(localStorage.getItem('jezyki_interpretowane_progress')||'{}')}catch{return {}}} function saveProgress(p){localStorage.setItem('jezyki_interpretowane_progress',JSON.stringify(p));renderStats()} function shuffle(a){return [...a].sort(()=>Math.random()-.5)} function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0)}
-function init(){renderStages();renderStats();$('resetStats').onclick=()=>{localStorage.removeItem('jezyki_interpretowane_progress');renderStats()};$('backBtn').onclick=()=>showScreen('start');$('quizBackBtn').onclick=()=>showScreen('start');$('showBtn').onclick=showAnswer;$('okBtn').onclick=()=>mark('known');$('againBtn').onclick=()=>mark('hard');$('nextBtn').onclick=next;$('prevBtn').onclick=prev;$('shuffleBtn').onclick=()=>startStage(state.stage,state.hardOnly);$('hardOnlyBtn').onclick=()=>startStage(state.stage,true);$('quizStartBtn').onclick=()=>startQuiz('all');$('quizFromStageBtn').onclick=()=>startQuiz(state.stage);$('restartQuizBtn').onclick=()=>startQuiz(quiz.stage)}
-function countHard(){const p=loadProgress();return state.cards.filter(c=>p[c.id]==='hard').length} function renderStats(){const p=loadProgress();$('totalCards').textContent=state.cards.length;$('knownCards').textContent=Object.values(p).filter(v=>v==='known').length;$('hardCards').textContent=Object.values(p).filter(v=>v==='hard').length;renderStages()}
-function renderStages(){const box=$('stages');box.innerHTML='';const all=[{name:'Wszystkie pytania',key:'all',count:state.cards.length},...categories.map(c=>({name:c,key:c,count:state.cards.filter(x=>x.category===c).length})),{name:'Tylko trudne',key:'hard',count:countHard()}];all.forEach(s=>{const btn=document.createElement('button');btn.className='stage';const desc=s.key==='hard'?'powtórka pytań oznaczonych jako trudne':'kliknij, żeby zacząć losową powtórkę';btn.innerHTML=`<b>${s.name}</b><span>${s.count} pytań • ${desc}</span>`;btn.onclick=()=>s.key==='hard'?startStage('all',true):startStage(s.key,false);box.appendChild(btn)})}
-function startStage(stage,hardOnly=false){state.stage=stage;state.hardOnly=hardOnly;const p=loadProgress();let pool=stage==='all'?state.cards:state.cards.filter(c=>c.category===stage);if(hardOnly)pool=pool.filter(c=>p[c.id]==='hard');if(pool.length===0){alert('Nie masz jeszcze trudnych pytań. Najpierw oznacz coś jako „Nie umiem”.');pool=state.cards}state.pool=shuffle(pool);state.index=0;$('stageTitle').textContent=hardOnly?'Powtórka trudnych pytań':(stage==='all'?'Wszystkie pytania':stage);$('modeLabel').textContent=hardOnly?'Tryb powtórki':'Tryb nauki';showScreen('learn');renderCard()}
-function renderCard(){const card=state.pool[state.index];$('question').textContent=card.id+') '+card.question;$('answer').textContent=card.answer;$('answer').classList.add('hidden');$('showBtn').classList.remove('hidden');$('okBtn').classList.add('hidden');$('againBtn').classList.add('hidden');$('counter').textContent=`${state.index+1} / ${state.pool.length}`;$('categoryPill').textContent=card.category;$('progress').style.width=`${((state.index+1)/state.pool.length)*100}%`} function showAnswer(){$('answer').classList.remove('hidden');$('showBtn').classList.add('hidden');$('okBtn').classList.remove('hidden');$('againBtn').classList.remove('hidden')} function mark(type){const card=state.pool[state.index];const p=loadProgress();p[card.id]=type;saveProgress(p);next()} function next(){state.index=(state.index+1)%state.pool.length;renderCard()} function prev(){state.index=(state.index-1+state.pool.length)%state.pool.length;renderCard()}
-function startQuiz(stage='all'){quiz.stage=stage;let pool=stage==='all'?state.cards:state.cards.filter(c=>c.category===stage);quiz.pool=shuffle(pool).slice(0,Math.min(12,pool.length));quiz.index=0;quiz.score=0;quiz.answered=false;$('quizTitle').textContent=stage==='all'?'Quiz ze wszystkich pytań':`Quiz: ${stage}`;showScreen('quiz');renderQuiz()} function makeOptions(card){const wrong=shuffle(state.cards.filter(c=>c.id!==card.id).map(c=>c.answer)).slice(0,3);return shuffle([card.answer,...wrong])} function renderQuiz(){const card=quiz.pool[quiz.index];quiz.answered=false;$('quizQuestion').textContent=card.id+') '+card.question;$('quizCounter').textContent=`${quiz.index+1} / ${quiz.pool.length}`;$('quizScore').textContent=`Wynik: ${quiz.score}`;$('quizProgress').style.width=`${((quiz.index+1)/quiz.pool.length)*100}%`;$('quizFeedback').classList.add('hidden');$('quizNextBtn').classList.add('hidden');const options=$('quizOptions');options.innerHTML='';makeOptions(card).forEach(opt=>{const btn=document.createElement('button');btn.className='option';btn.textContent=opt;btn.onclick=()=>chooseAnswer(btn,opt,card.answer);options.appendChild(btn)})}
-function chooseAnswer(btn,picked,correct){if(quiz.answered)return;quiz.answered=true;document.querySelectorAll('.option').forEach(o=>{o.disabled=true;if(o.textContent===correct)o.classList.add('correct')});if(picked===correct){quiz.score++;btn.classList.add('correct');$('quizFeedback').textContent='Dobrze ✅'}else{btn.classList.add('wrong');$('quizFeedback').textContent=`Źle. Poprawna odpowiedź: ${correct}`}$('quizScore').textContent=`Wynik: ${quiz.score}`;$('quizFeedback').classList.remove('hidden');$('quizNextBtn').classList.remove('hidden')} function quizNext(){if(quiz.index+1>=quiz.pool.length){$('quizQuestion').textContent=`Koniec quizu — wynik: ${quiz.score}/${quiz.pool.length}`;$('quizOptions').innerHTML='';$('quizFeedback').textContent=quiz.score===quiz.pool.length?'Idealnie. Wszystko umiesz 🔥':'Powtórz fiszki i oznacz trudne pytania.';$('quizFeedback').classList.remove('hidden');$('quizNextBtn').classList.add('hidden');return}quiz.index++;renderQuiz()}
-document.addEventListener('DOMContentLoaded',init);
-</script>
+
+  <script src="script.js"></script>
 </body>
 </html>

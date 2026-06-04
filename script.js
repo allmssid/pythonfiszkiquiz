@@ -1,17 +1,17 @@
-const state = { cards: [], pool: [], index: 0, stage: 'all', hardOnly: false };
-const quiz = { pool: [], index: 0, score: 0, answered: false, stage: 'all' };
+const state = { cards: [], pool: [], index: 0, stage: 'all', hardOnly: false, quizPool: [], quizIndex: 0, score: 0, quizStage: 'all', answered: false };
 const $ = (id) => document.getElementById(id);
-const categories = ['Historia języków', 'Python', 'JavaScript'];
+const storageKey = 'jezyki_interpretowane_progress_v3';
 
-function loadProgress(){ return JSON.parse(localStorage.getItem('jezyki_interpretowane_progress') || '{}'); }
-function saveProgress(p){ localStorage.setItem('jezyki_interpretowane_progress', JSON.stringify(p)); renderStats(); }
+function loadProgress(){ return JSON.parse(localStorage.getItem(storageKey) || '{}'); }
+function saveProgress(p){ localStorage.setItem(storageKey, JSON.stringify(p)); renderStats(); }
 function shuffle(arr){ return [...arr].sort(() => Math.random() - 0.5); }
-function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
+function uniqueCategories(){ return [...new Set(state.cards.map(c => c.category))]; }
+function escapeHtml(text){ return String(text).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
 async function init(){
   state.cards = await fetch('data/cards.json').then(r => r.json());
   renderStages(); renderStats();
-  $('resetStats').onclick = () => { localStorage.removeItem('jezyki_interpretowane_progress'); renderStats(); };
+  $('resetStats').onclick = () => { localStorage.removeItem(storageKey); renderStats(); };
   $('backBtn').onclick = () => showScreen('start');
   $('quizBackBtn').onclick = () => showScreen('start');
   $('showBtn').onclick = showAnswer;
@@ -21,25 +21,23 @@ async function init(){
   $('prevBtn').onclick = prev;
   $('shuffleBtn').onclick = () => startStage(state.stage, state.hardOnly);
   $('hardOnlyBtn').onclick = () => startStage(state.stage, true);
-  $('quizStartBtn').onclick = () => startQuiz('all');
+  $('quickQuizBtn').onclick = () => startQuiz('all');
   $('quizFromStageBtn').onclick = () => startQuiz(state.stage);
-  $('restartQuizBtn').onclick = () => startQuiz(quiz.stage);
+  $('restartQuizBtn').onclick = () => startQuiz(state.quizStage);
   $('quizNextBtn').onclick = quizNext;
 }
-
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
 function renderStages(){
   const box = $('stages'); box.innerHTML = '';
-  const all = [{name:'Wszystkie pytania', key:'all', count:state.cards.length}, ...categories.map(c=>({name:c,key:c,count:state.cards.filter(x=>x.category===c).length}))];
-  all.push({name:'Tylko trudne', key:'hard', count:countHard()});
-  all.forEach(s => {
+  const cats = uniqueCategories();
+  const stages = [{name:'Wszystkie pytania', key:'all', count:state.cards.length}, ...cats.map(c=>({name:c,key:c,count:state.cards.filter(x=>x.category===c).length})), {name:'Tylko trudne', key:'hard', count:countHard()}];
+  stages.forEach(s => {
     const btn = document.createElement('button'); btn.className='stage';
-    const desc = s.key === 'hard' ? 'powtórka pytań oznaczonych jako trudne' : 'kliknij, żeby zacząć losową powtórkę';
-    btn.innerHTML = `<b>${s.name}</b><span>${s.count} pytań • ${desc}</span>`;
+    btn.innerHTML = `<b>${escapeHtml(s.name)}</b><span>${s.count} pytań • kliknij, żeby zacząć powtórkę</span>`;
     btn.onclick = () => s.key === 'hard' ? startStage('all', true) : startStage(s.key, false);
     box.appendChild(btn);
   });
 }
-
 function renderStats(){
   const p=loadProgress();
   $('totalCards').textContent = state.cards.length || 0;
@@ -48,7 +46,6 @@ function renderStats(){
   if(state.cards.length) renderStages();
 }
 function countHard(){ const p=loadProgress(); return state.cards.filter(c=>p[c.id]==='hard').length; }
-
 function startStage(stage, hardOnly=false){
   state.stage=stage; state.hardOnly=hardOnly;
   const p=loadProgress();
@@ -64,69 +61,79 @@ function renderCard(){
   const card = state.pool[state.index];
   $('question').textContent = card.id + ') ' + card.question;
   $('answer').textContent = card.answer;
-  $('answer').classList.add('hidden');
+  $('explain').textContent = card.explain || '';
+  if(card.code){ $('codeBlock').textContent = card.code; $('codeBlock').classList.remove('hidden'); } else { $('codeBlock').classList.add('hidden'); }
+  $('answer').classList.add('hidden'); $('explain').classList.add('hidden');
   $('showBtn').classList.remove('hidden');
   $('okBtn').classList.add('hidden'); $('againBtn').classList.add('hidden');
   $('counter').textContent = `${state.index+1} / ${state.pool.length}`;
   $('categoryPill').textContent = card.category;
   $('progress').style.width = `${((state.index+1)/state.pool.length)*100}%`;
 }
-function showAnswer(){ $('answer').classList.remove('hidden'); $('showBtn').classList.add('hidden'); $('okBtn').classList.remove('hidden'); $('againBtn').classList.remove('hidden'); }
+function showAnswer(){ $('answer').classList.remove('hidden'); $('explain').classList.remove('hidden'); $('showBtn').classList.add('hidden'); $('okBtn').classList.remove('hidden'); $('againBtn').classList.remove('hidden'); }
 function mark(type){ const card=state.pool[state.index]; const p=loadProgress(); p[card.id]=type; saveProgress(p); next(); }
 function next(){ state.index = (state.index + 1) % state.pool.length; renderCard(); }
 function prev(){ state.index = (state.index - 1 + state.pool.length) % state.pool.length; renderCard(); }
 
 function startQuiz(stage='all'){
-  quiz.stage = stage;
-  let pool = stage==='all' ? state.cards : state.cards.filter(c=>c.category===stage);
-  quiz.pool = shuffle(pool).slice(0, Math.min(12, pool.length));
-  quiz.index = 0; quiz.score = 0; quiz.answered = false;
-  $('quizTitle').textContent = stage==='all' ? 'Quiz ze wszystkich pytań' : `Quiz: ${stage}`;
-  showScreen('quiz'); renderQuiz();
-}
-function makeOptions(card){
-  const wrong = shuffle(state.cards.filter(c=>c.id!==card.id).map(c=>c.answer)).slice(0,3);
-  return shuffle([card.answer, ...wrong]);
+  state.quizStage = stage;
+  let pool = stage === 'all' ? state.cards : state.cards.filter(c => c.category === stage);
+  if(!pool.length) pool = state.cards;
+  state.quizPool = shuffle(pool);
+  state.quizIndex = 0;
+  state.score = 0;
+  state.answered = false;
+  $('quizTitle').textContent = stage === 'all' ? 'Szybki quiz' : `Quiz: ${stage}`;
+  showScreen('quiz');
+  renderQuiz();
 }
 function renderQuiz(){
-  const card = quiz.pool[quiz.index];
-  quiz.answered = false;
+  const card = state.quizPool[state.quizIndex];
+  state.answered = false;
   $('quizQuestion').textContent = card.id + ') ' + card.question;
-  $('quizCounter').textContent = `${quiz.index+1} / ${quiz.pool.length}`;
-  $('quizScore').textContent = `Wynik: ${quiz.score}`;
-  $('quizProgress').style.width = `${((quiz.index+1)/quiz.pool.length)*100}%`;
+  if(card.code){ $('quizCodeBlock').textContent = card.code; $('quizCodeBlock').classList.remove('hidden'); } else { $('quizCodeBlock').classList.add('hidden'); }
+  $('quizCounter').textContent = `${state.quizIndex+1} / ${state.quizPool.length}`;
+  $('quizScore').textContent = `${state.score} pkt`;
+  $('quizProgress').style.width = `${((state.quizIndex+1)/state.quizPool.length)*100}%`;
   $('quizFeedback').classList.add('hidden');
   $('quizNextBtn').classList.add('hidden');
-  const options = $('quizOptions'); options.innerHTML = '';
-  makeOptions(card).forEach(opt => {
+  const optionsBox = $('quizOptions'); optionsBox.innerHTML = '';
+  shuffle(card.options).forEach(opt => {
     const btn = document.createElement('button');
-    btn.className = 'option'; btn.textContent = opt;
-    btn.onclick = () => chooseAnswer(btn, opt, card.answer);
-    options.appendChild(btn);
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.onclick = () => chooseAnswer(btn, opt, card);
+    optionsBox.appendChild(btn);
   });
 }
-function chooseAnswer(btn, picked, correct){
-  if(quiz.answered) return;
-  quiz.answered = true;
-  document.querySelectorAll('.option').forEach(o => {
-    o.disabled = true;
-    if(o.textContent === correct) o.classList.add('correct');
+function chooseAnswer(btn, opt, card){
+  if(state.answered) return;
+  state.answered = true;
+  const buttons = [...document.querySelectorAll('.option')];
+  buttons.forEach(b => {
+    b.disabled = true;
+    if(b.textContent === card.answer) b.classList.add('correct');
   });
-  if(picked === correct){ quiz.score++; btn.classList.add('correct'); $('quizFeedback').textContent = 'Dobrze ✅'; }
-  else { btn.classList.add('wrong'); $('quizFeedback').textContent = `Źle. Poprawna odpowiedź: ${correct}`; }
-  $('quizScore').textContent = `Wynik: ${quiz.score}`;
+  if(opt === card.answer){ state.score++; btn.classList.add('correct'); }
+  else btn.classList.add('wrong');
+  $('quizScore').textContent = `${state.score} pkt`;
+  $('quizFeedback').innerHTML = `<b>Poprawna odpowiedź:</b> ${escapeHtml(card.answer)}<br>${escapeHtml(card.explain || '')}`;
   $('quizFeedback').classList.remove('hidden');
+  $('quizNextBtn').textContent = state.quizIndex === state.quizPool.length - 1 ? 'Zakończ quiz' : 'Następne pytanie';
   $('quizNextBtn').classList.remove('hidden');
 }
 function quizNext(){
-  if(quiz.index + 1 >= quiz.pool.length){
-    $('quizQuestion').textContent = `Koniec quizu — wynik: ${quiz.score}/${quiz.pool.length}`;
+  if(state.quizIndex === state.quizPool.length - 1){
+    $('quizQuestion').textContent = `Koniec quizu: ${state.score} / ${state.quizPool.length}`;
+    $('quizCodeBlock').classList.add('hidden');
     $('quizOptions').innerHTML = '';
-    $('quizFeedback').textContent = quiz.score === quiz.pool.length ? 'Idealnie. Wszystko umiesz 🔥' : 'Zapisz trudne pytania i powtórz fiszki.';
+    $('quizFeedback').innerHTML = state.score === state.quizPool.length ? 'Super, wszystko poprawnie.' : 'Wróć do fiszek i powtórz pytania, które sprawiły problem.';
     $('quizFeedback').classList.remove('hidden');
     $('quizNextBtn').classList.add('hidden');
     return;
   }
-  quiz.index++; renderQuiz();
+  state.quizIndex++;
+  renderQuiz();
 }
+
 init();

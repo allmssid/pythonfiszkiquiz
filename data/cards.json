@@ -1,182 +1,32 @@
 [
-  {
-    "id": 1,
-    "category": "Historia języków",
-    "question": "Język programowania stworzony w 1995 roku przez Japończyka Yukihiro Matsumoto to:",
-    "answer": "Ruby"
-  },
-  {
-    "id": 2,
-    "category": "Historia języków",
-    "question": "Język programowania, który powstał w 1987 roku, został stworzony przez Larry’ego Walla:",
-    "answer": "Perl"
-  },
-  {
-    "id": 3,
-    "category": "Historia języków",
-    "question": "Język, który został stworzony przez Brendona Eicha w firmie Netscape w 1995 to:",
-    "answer": "JavaScript"
-  },
-  {
-    "id": 4,
-    "category": "Historia języków",
-    "question": "Twórcą języka Python jest:",
-    "answer": "Guido van Rossum"
-  },
-  {
-    "id": 5,
-    "category": "Python",
-    "question": "Jaką nazwę nosi zwyczajowo uchwyt do obiektu, który jest przekazywany do metody instancji (Python):",
-    "answer": "self"
-  },
-  {
-    "id": 6,
-    "category": "Python",
-    "question": "Jaką nazwę nosi metoda inicjalizacyjna (Python):",
-    "answer": "init()"
-  },
-  {
-    "id": 7,
-    "category": "Python",
-    "question": "Przykładem metody specjalnej jest (Python):",
-    "answer": "str() (np. również init(), repr(), call())"
-  },
-  {
-    "id": 8,
-    "category": "Python",
-    "question": "Które metody specjalne pozwalają na przekonwertowanie obiektu na łańcuch znaków (Python):",
-    "answer": "str() oraz repr()"
-  },
-  {
-    "id": 9,
-    "category": "Python",
-    "question": "Jaki błąd zawiera następujący kod (Python):",
-    "answer": "Nie zawiera błędu (this może być nazwą parametru zamiast self)"
-  },
-  {
-    "id": 10,
-    "category": "Python",
-    "question": "Co zostanie wypisane na ekranie po wykonaniu następującego kodu (Python):",
-    "answer": "TypeError"
-  },
-  {
-    "id": 11,
-    "category": "Python",
-    "question": "com = 2+2J, zmienna com jest w Pythonie typu:",
-    "answer": "complex"
-  },
-  {
-    "id": 12,
-    "category": "Python",
-    "question": "a = True, zmienna a jest w Pythonie typu:",
-    "answer": "bool"
-  },
-  {
-    "id": 13,
-    "category": "Python",
-    "question": "b = 1.0, zmienna b jest w Pythonie typu:",
-    "answer": "float"
-  },
-  {
-    "id": 14,
-    "category": "Python",
-    "question": "c = (1), zmienna c jest w Pythonie typu:",
-    "answer": "int"
-  },
-  {
-    "id": 15,
-    "category": "Python",
-    "question": "Jaka jest zawartość zmiennej s po wykonaniu następującego kodu (Python):",
-    "answer": "TypeError"
-  },
-  {
-    "id": 16,
-    "category": "Python",
-    "question": "x = (1, 2, 3), x jest (Python):",
-    "answer": "tuple"
-  },
-  {
-    "id": 17,
-    "category": "Python",
-    "question": "y = {'1': 4, '2': 3}, y jest (Python):",
-    "answer": "dict"
-  },
-  {
-    "id": 18,
-    "category": "Python",
-    "question": "z = [1, 2, 3], z jest (Python):",
-    "answer": "list"
-  },
-  {
-    "id": 19,
-    "category": "Python",
-    "question": "Funkcja, której głównym zadaniem jest przeźroczyste opakowanie innej funkcji lub klasy to, oznaczana symbolem @:",
-    "answer": "Dekorator"
-  },
-  {
-    "id": 20,
-    "category": "JavaScript",
-    "question": "let x = /\\d+/g, x jest (JS):",
-    "answer": "RegExp"
-  },
-  {
-    "id": 21,
-    "category": "JavaScript",
-    "question": "Są nieuporządkowaną kolekcją właściwości, które zawierają wartości typów podstawowych, innych obiektów lub funkcji (JS):",
-    "answer": "Object"
-  },
-  {
-    "id": 22,
-    "category": "JavaScript",
-    "question": "Jaką wartość ma zmienna x po wykonaniu następującego kodu:",
-    "answer": "undefined"
-  },
-  {
-    "id": 23,
-    "category": "JavaScript",
-    "question": "Po wykonaniu poniższego kodu (JS) z zawiera:",
-    "answer": "1"
-  },
-  {
-    "id": 24,
-    "category": "JavaScript",
-    "question": "Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):",
-    "answer": "true"
-  },
-  {
-    "id": 25,
-    "category": "JavaScript",
-    "question": "Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):",
-    "answer": "false"
-  },
-  {
-    "id": 26,
-    "category": "JavaScript",
-    "question": "Wyrażenie regularne /\\d{4}/ dopasowuje do łańcucha:",
-    "answer": "Dokładnie czterech cyfr"
-  },
-  {
-    "id": 27,
-    "category": "JavaScript",
-    "question": "Przy wyrażeniu regularnym /x+/ znak + oznacza:",
-    "answer": "Jedno lub więcej wystąpień"
-  },
-  {
-    "id": 28,
-    "category": "JavaScript",
-    "question": "Przy wyrażeniu regularnym /x?/ znak ? oznacza:",
-    "answer": "Zero lub jedno wystąpienie"
-  },
-  {
-    "id": 29,
-    "category": "JavaScript",
-    "question": "Połączenie obiektu funkcji z jej zasięgiem (wystarcza zbiór wiązań zmiennych wolnych) jest nazywane:",
-    "answer": "Domknięciem (closure)"
-  },
-  {
-    "id": 30,
-    "category": "JavaScript",
-    "question": "Słowo let wyznacza w JS:",
-    "answer": "Zasięg blokowy zmiennej"
-  }
+  {"id":1,"category":"Podstawy języków","question":"Język programowania stworzony w 1995 roku przez Japończyka Yukihiro Matsumoto to:","answer":"Ruby","explain":"Ruby stworzył Yukihiro Matsumoto, często nazywany Matz.","options":["Ruby","Perl","Python","JavaScript"]},
+  {"id":2,"category":"Podstawy języków","question":"Język programowania, który powstał w 1987 roku, został stworzony przez Larry’ego Walla:","answer":"Perl","explain":"Perl został stworzony przez Larry’ego Walla.","options":["Perl","Ruby","Python","PHP"]},
+  {"id":3,"category":"Podstawy języków","question":"Język, który został stworzony przez Brendona Eicha w firmie Netscape w 1995 to:","answer":"JavaScript","explain":"Brendan Eich stworzył JavaScript w Netscape w 1995 roku.","options":["JavaScript","Java","Ruby","Perl"]},
+  {"id":4,"category":"Podstawy języków","question":"Twórcą języka Python jest:","answer":"Guido van Rossum","explain":"Python został stworzony przez Guido van Rossuma.","options":["Guido van Rossum","Larry Wall","Yukihiro Matsumoto","Brendan Eich"]},
+  {"id":5,"category":"Python — klasy i metody","question":"Jaką nazwę nosi zwyczajowo uchwyt do obiektu, który jest przekazywany do metody instancji (Python):","answer":"self","explain":"W Pythonie pierwszy parametr metody instancji zwyczajowo nazywa się self.","options":["self","this","object","instance"]},
+  {"id":6,"category":"Python — klasy i metody","question":"Jaką nazwę nosi metoda inicjacyjna / inicjalizacyjna (Python):","answer":"__init__()","explain":"Poprawny zapis to __init__() z dwoma podkreśleniami z obu stron.","options":["__init__()","init()","__start__()","constructor()"]},
+  {"id":7,"category":"Python — klasy i metody","question":"Przykładem metody specjalnej jest (Python):","answer":"np. __str__()","explain":"Metody specjalne w Pythonie mają podwójne podkreślenia, np. __init__(), __str__(), __repr__(), __call__().","options":["__str__()","str()","print()","main()"]},
+  {"id":8,"category":"Python — klasy i metody","question":"Które metody specjalne pozwalają na przekonwertowanie obiektu na łańcuch znaków (Python):","answer":"__str__() oraz __repr__()","explain":"__str__() daje czytelną reprezentację tekstową, a __repr__() reprezentację bardziej techniczną/deweloperską.","options":["__str__() oraz __repr__()","str() oraz repr()","__text__() oraz __string__()","toString() oraz repr()"]},
+  {"id":9,"category":"Python — kod","question":"Jaki błąd zawiera następujący kod (Python):","code":"class Kwadrat:\n    def pole(this):\n        this.x = 10\n        return this.x * this.x\n\nk = Kwadrat()\nprint(Kwadrat.pole(k))","answer":"Nie zawiera błędu. Wynik to 100.","explain":"self to tylko konwencja. Parametr może nazywać się this. Wywołanie Kwadrat.pole(k) przekazuje obiekt k jako argument this.","options":["Nie zawiera błędu. Wynik to 100.","SyntaxError","NameError","TypeError"]},
+  {"id":10,"category":"Python — kod","question":"Co zostanie wypisane na ekranie po wykonaniu następującego kodu (Python):","code":"class Kwadrat:\n    def pole(self):\n        return self.x * self.x\n\nk = Kwadrat(10)\nprint(k.pole(k))","answer":"TypeError","explain":"Błąd pojawi się już przy Kwadrat(10), bo klasa nie ma konstruktora przyjmującego argument 10. Dodatkowo k.pole(k) też byłoby błędne, bo metoda pole nie oczekuje dodatkowego argumentu poza self.","options":["TypeError","100","AttributeError","Nie wypisze nic, ale kod jest poprawny"]},
+  {"id":11,"category":"Python — typy danych","question":"com = 2+2J, zmienna com jest w Pythonie typu:","answer":"complex","explain":"Liczby z częścią urojoną oznaczaną przez j/J mają typ complex.","options":["complex","float","int","tuple"]},
+  {"id":12,"category":"Python — typy danych","question":"a = True, zmienna a jest w Pythonie typu:","answer":"bool","explain":"True i False są wartościami typu bool.","options":["bool","int","str","float"]},
+  {"id":13,"category":"Python — typy danych","question":"b = 1.0, zmienna b jest w Pythonie typu:","answer":"float","explain":"Liczba z kropką dziesiętną ma typ float.","options":["float","int","complex","bool"]},
+  {"id":14,"category":"Python — typy danych","question":"c = (1), zmienna c jest w Pythonie typu:","answer":"int","explain":"Same nawiasy nie tworzą krotki. Krotka jednoelementowa to (1,).","options":["int","tuple","list","dict"]},
+  {"id":15,"category":"Python — kod","question":"Jaka jest zawartość zmiennej s po wykonaniu następującego kodu (Python):","code":"s = '123'\ns[0] = 'x'","answer":"TypeError","explain":"Łańcuchy znaków w Pythonie są niemutowalne, więc nie da się zmienić pojedynczego znaku przez indeks.","options":["TypeError","x23","123","SyntaxError"]},
+  {"id":16,"category":"Python — typy danych","question":"x = (1, 2, 3), x jest (Python):","answer":"tuple","explain":"Nawiasy z wartościami oddzielonymi przecinkami tworzą krotkę.","options":["tuple","list","dict","set"]},
+  {"id":17,"category":"Python — typy danych","question":"y = {'1': 4, '2': 3}, y jest (Python):","answer":"dict","explain":"Zapis klucz: wartość w nawiasach klamrowych tworzy słownik.","options":["dict","list","tuple","set"]},
+  {"id":18,"category":"Python — typy danych","question":"z = [1, 2, 3], z jest (Python):","answer":"list","explain":"Nawiasy kwadratowe tworzą listę.","options":["list","tuple","dict","str"]},
+  {"id":19,"category":"Python — dekoratory","question":"Funkcja, której głównym zadaniem jest przeźroczyste opakowanie innej funkcji lub klasy to, oznaczana symbolem @:","answer":"Dekorator","explain":"Dekorator opakowuje funkcję lub klasę i może zmieniać albo rozszerzać jej działanie.","options":["Dekorator","Generator","Iterator","Metaklasa"]},
+  {"id":20,"category":"JavaScript — typy i obiekty","question":"let x = /\\d+/g, x jest (JS):","answer":"RegExp","explain":"Literał /\\d+/g tworzy wyrażenie regularne, czyli obiekt RegExp.","options":["RegExp","String","Array","Number"]},
+  {"id":21,"category":"JavaScript — typy i obiekty","question":"Są nieuporządkowaną kolekcją właściwości, które zawierają wartości typów podstawowych, innych obiektów lub funkcji (JS):","answer":"Object","explain":"Obiekty w JavaScript przechowują właściwości, czyli pary nazwa-wartość.","options":["Object","Array","Function","RegExp"]},
+  {"id":22,"category":"JavaScript — kod","question":"Jaką wartość ma zmienna x po wykonaniu następującego kodu:","code":"let lst = [1, 2, 3];\nlet x = lst[3];","answer":"undefined","explain":"Tablica ma indeksy 0, 1, 2. Element o indeksie 3 nie istnieje, więc wynik to undefined.","options":["undefined","3","null","Błąd składni"]},
+  {"id":23,"category":"JavaScript — kod","question":"Po wykonaniu poniższego kodu (JS) z zawiera:","code":"let tab = [1, 2, 3, 4];\nlet z = tab.indexOf(2);","answer":"1","explain":"indexOf(2) zwraca indeks wartości 2. W tablicy [1,2,3,4] wartość 2 jest pod indeksem 1.","options":["1","2","0","-1"]},
+  {"id":24,"category":"JavaScript — porównania","question":"Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):","code":"let x = \"1\";\nx == 1;","answer":"true","explain":"Operator == wykonuje konwersję typów, dlatego tekst \"1\" jest uznany za równy liczbie 1.","options":["true","false","undefined","TypeError"]},
+  {"id":25,"category":"JavaScript — porównania","question":"Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):","code":"let x = \"1\";\nx === 1;","answer":"false","explain":"Operator === porównuje wartość i typ bez konwersji. \"1\" to string, a 1 to number.","options":["false","true","undefined","TypeError"]},
+  {"id":26,"category":"Wyrażenia regularne","question":"Wyrażenie regularne /\\d{4}/ dopasowuje do łańcucha:","answer":"Cztery kolejne cyfry","explain":"\\d oznacza cyfrę, a {4} oznacza dokładnie 4 wystąpienia. Bez kotwic ^ i $ może dopasować cztery cyfry jako fragment dłuższego tekstu.","options":["Cztery kolejne cyfry","Dowolne cztery znaki","Co najmniej cztery cyfry","Jedną cyfrę od 0 do 4"]},
+  {"id":27,"category":"Wyrażenia regularne","question":"Przy wyrażeniu regularnym /x+/ znak + oznacza:","answer":"Jedno lub więcej wystąpień","explain":"Plus oznacza, że poprzedni znak lub grupa musi wystąpić przynajmniej raz.","options":["Jedno lub więcej wystąpień","Zero lub jedno wystąpienie","Dokładnie jedno wystąpienie","Zero lub więcej wystąpień"]},
+  {"id":28,"category":"Wyrażenia regularne","question":"Przy wyrażeniu regularnym /x?/ znak ? oznacza:","answer":"Zero lub jedno wystąpienie","explain":"Znak zapytania oznacza, że element jest opcjonalny.","options":["Zero lub jedno wystąpienie","Jedno lub więcej wystąpień","Dokładnie dwa wystąpienia","Dowolny znak"]},
+  {"id":29,"category":"JavaScript — domknięcia","question":"Połączenie obiektu funkcji z jej zasięgiem (wystarcza zbiór wiązań zmiennych wolnych) jest nazywane:","answer":"Domknięciem (closure)","explain":"Domknięcie to funkcja razem ze środowiskiem, w którym pamięta zmienne z zewnętrznego zakresu.","options":["Domknięciem (closure)","Obiektem","Prototypem","Dekoratorem"]},
+  {"id":30,"category":"JavaScript — zmienne","question":"Słowo let wyznacza w JS:","answer":"Zasięg blokowy zmiennej","explain":"let tworzy zmienną widoczną w bloku, np. wewnątrz nawiasów klamrowych {}.","options":["Zasięg blokowy zmiennej","Zasięg globalny zawsze","Stałą wartość","Funkcję anonimową"]}
 ]
