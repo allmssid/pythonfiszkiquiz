@@ -1,154 +1,132 @@
-const cards = [
-  {q:"Język programowania stworzony w 1995 roku przez Japończyka Yukihiro Matsumoto to:", a:"Ruby"},
-  {q:"Język programowania, który powstał w 1987 roku, został stworzony przez Larry’ego Walla:", a:"Perl"},
-  {q:"Język, który został stworzony przez Brendona Eicha w firmie Netscape w 1995 to:", a:"JavaScript"},
-  {q:"Twórcą języka Python jest:", a:"Guido van Rossum"},
-  {q:"Jaką nazwę nosi zwyczajowo uchwyt do obiektu, który jest przekazywany do metody instancji (Python):", a:"self"},
-  {q:"Jaką nazwę nosi metoda inicjalizacyjna (Python):", a:"init()"},
-  {q:"Przykładem metody specjalnej jest (Python):", a:"str() (np. również init(), repr(), call())"},
-  {q:"Które metody specjalne pozwalają na przekonwertowanie obiektu na łańcuch znaków (Python):", a:"str() oraz repr()"},
-  {q:"Jaki błąd zawiera następujący kod (Python):", a:"Nie zawiera błędu (this może być nazwą parametru zamiast self)"},
-  {q:"Co zostanie wypisane na ekranie po wykonaniu następującego kodu (Python):", a:"TypeError"},
-  {q:"com = 2+2J, zmienna com jest w Pythonie typu:", a:"complex"},
-  {q:"a = True, zmienna a jest w Pythonie typu:", a:"bool"},
-  {q:"b = 1.0, zmienna b jest w Pythonie typu:", a:"float"},
-  {q:"c = (1), zmienna c jest w Pythonie typu:", a:"int"},
-  {q:"Jaka jest zawartość zmiennej s po wykonaniu następującego kodu (Python):", a:"TypeError"},
-  {q:"x = (1, 2, 3), x jest (Python):", a:"tuple"},
-  {q:"y = {'1': 4, '2': 3}, y jest (Python):", a:"dict"},
-  {q:"z = [1, 2, 3], z jest (Python):", a:"list"},
-  {q:"Funkcja, której głównym zadaniem jest przeźroczyste opakowanie innej funkcji lub klasy to, oznaczana symbolem @:", a:"Dekorator"},
-  {q:"let x = /\\d+/g, x jest (JS):", a:"RegExp"},
-  {q:"Są nieuporządkowaną kolekcją właściwości, które zawierają wartości typów podstawowych, innych obiektów lub funkcji (JS):", a:"Object"},
-  {q:"Jaką wartość ma zmienna x po wykonaniu następującego kodu:", a:"undefined"},
-  {q:"Po wykonaniu poniższego kodu (JS) z zawiera:", a:"1"},
-  {q:"Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):", a:"true"},
-  {q:"Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):", a:"false"},
-  {q:"Wyrażenie regularne /\\d{4}/ dopasowuje do łańcucha:", a:"Dokładnie czterech cyfr"},
-  {q:"Przy wyrażeniu regularnym /x+/ znak + oznacza:", a:"Jedno lub więcej wystąpień"},
-  {q:"Przy wyrażeniu regularnym /x?/ znak ? oznacza:", a:"Zero lub jedno wystąpienie"},
-  {q:"Połączenie obiektu funkcji z jej zasięgiem (wystarcza zbiór wiązań zmiennych wolnych) jest nazywane:", a:"Domknięciem (closure)"},
-  {q:"Słowo let wyznacza w JS:", a:"Zasięg blokowy zmiennej"}
-];
-
-let order = [...cards.keys()];
-let current = 0;
-let flipped = false;
-let known = new Set(JSON.parse(localStorage.getItem("knownCards") || "[]"));
-let best = Number(localStorage.getItem("quizBest") || 0);
-let quizOrder = [];
-let quizIndex = 0;
-let score = 0;
-let answered = false;
-
+const state = { cards: [], pool: [], index: 0, stage: 'all', hardOnly: false };
+const quiz = { pool: [], index: 0, score: 0, answered: false, stage: 'all' };
 const $ = (id) => document.getElementById(id);
-const shuffle = (arr) => arr.map(v => [Math.random(), v]).sort((a,b) => a[0]-b[0]).map(x => x[1]);
+const categories = ['Historia języków', 'Python', 'JavaScript'];
 
-function saveProgress(){ localStorage.setItem("knownCards", JSON.stringify([...known])); }
-function updateStats(){
-  $("totalCards").textContent = cards.length;
-  $("knownCount").textContent = known.size;
-  $("quizBest").textContent = `${best}%`;
+function loadProgress(){ return JSON.parse(localStorage.getItem('jezyki_interpretowane_progress') || '{}'); }
+function saveProgress(p){ localStorage.setItem('jezyki_interpretowane_progress', JSON.stringify(p)); renderStats(); }
+function shuffle(arr){ return [...arr].sort(() => Math.random() - 0.5); }
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
+
+async function init(){
+  state.cards = await fetch('data/cards.json').then(r => r.json());
+  renderStages(); renderStats();
+  $('resetStats').onclick = () => { localStorage.removeItem('jezyki_interpretowane_progress'); renderStats(); };
+  $('backBtn').onclick = () => showScreen('start');
+  $('quizBackBtn').onclick = () => showScreen('start');
+  $('showBtn').onclick = showAnswer;
+  $('okBtn').onclick = () => mark('known');
+  $('againBtn').onclick = () => mark('hard');
+  $('nextBtn').onclick = next;
+  $('prevBtn').onclick = prev;
+  $('shuffleBtn').onclick = () => startStage(state.stage, state.hardOnly);
+  $('hardOnlyBtn').onclick = () => startStage(state.stage, true);
+  $('quizStartBtn').onclick = () => startQuiz('all');
+  $('quizFromStageBtn').onclick = () => startQuiz(state.stage);
+  $('restartQuizBtn').onclick = () => startQuiz(quiz.stage);
+  $('quizNextBtn').onclick = quizNext;
+}
+
+function renderStages(){
+  const box = $('stages'); box.innerHTML = '';
+  const all = [{name:'Wszystkie pytania', key:'all', count:state.cards.length}, ...categories.map(c=>({name:c,key:c,count:state.cards.filter(x=>x.category===c).length}))];
+  all.push({name:'Tylko trudne', key:'hard', count:countHard()});
+  all.forEach(s => {
+    const btn = document.createElement('button'); btn.className='stage';
+    const desc = s.key === 'hard' ? 'powtórka pytań oznaczonych jako trudne' : 'kliknij, żeby zacząć losową powtórkę';
+    btn.innerHTML = `<b>${s.name}</b><span>${s.count} pytań • ${desc}</span>`;
+    btn.onclick = () => s.key === 'hard' ? startStage('all', true) : startStage(s.key, false);
+    box.appendChild(btn);
+  });
+}
+
+function renderStats(){
+  const p=loadProgress();
+  $('totalCards').textContent = state.cards.length || 0;
+  $('knownCards').textContent = Object.values(p).filter(v=>v==='known').length;
+  $('hardCards').textContent = Object.values(p).filter(v=>v==='hard').length;
+  if(state.cards.length) renderStages();
+}
+function countHard(){ const p=loadProgress(); return state.cards.filter(c=>p[c.id]==='hard').length; }
+
+function startStage(stage, hardOnly=false){
+  state.stage=stage; state.hardOnly=hardOnly;
+  const p=loadProgress();
+  let pool = stage==='all' ? state.cards : state.cards.filter(c=>c.category===stage);
+  if(hardOnly) pool = pool.filter(c=>p[c.id]==='hard');
+  if(pool.length===0) pool = state.cards;
+  state.pool = shuffle(pool); state.index=0;
+  $('stageTitle').textContent = hardOnly ? 'Powtórka trudnych pytań' : (stage==='all' ? 'Wszystkie pytania' : stage);
+  $('modeLabel').textContent = hardOnly ? 'Tryb powtórki' : 'Tryb nauki';
+  showScreen('learn'); renderCard();
 }
 function renderCard(){
-  const idx = order[current];
-  $("flashcard").classList.toggle("flipped", flipped);
-  $("cardQuestion").textContent = cards[idx].q;
-  $("cardAnswer").textContent = cards[idx].a;
-  $("cardCounter").textContent = `${current + 1} / ${cards.length}`;
-  const pct = Math.round(((current + 1) / cards.length) * 100);
-  $("progressBar").style.width = `${pct}%`;
-  $("progressText").textContent = `${pct}% przerobione`;
-  updateStats();
+  const card = state.pool[state.index];
+  $('question').textContent = card.id + ') ' + card.question;
+  $('answer').textContent = card.answer;
+  $('answer').classList.add('hidden');
+  $('showBtn').classList.remove('hidden');
+  $('okBtn').classList.add('hidden'); $('againBtn').classList.add('hidden');
+  $('counter').textContent = `${state.index+1} / ${state.pool.length}`;
+  $('categoryPill').textContent = card.category;
+  $('progress').style.width = `${((state.index+1)/state.pool.length)*100}%`;
 }
-function nextCard(){ current = (current + 1) % cards.length; flipped = false; renderCard(); }
-function prevCard(){ current = (current - 1 + cards.length) % cards.length; flipped = false; renderCard(); }
+function showAnswer(){ $('answer').classList.remove('hidden'); $('showBtn').classList.add('hidden'); $('okBtn').classList.remove('hidden'); $('againBtn').classList.remove('hidden'); }
+function mark(type){ const card=state.pool[state.index]; const p=loadProgress(); p[card.id]=type; saveProgress(p); next(); }
+function next(){ state.index = (state.index + 1) % state.pool.length; renderCard(); }
+function prev(){ state.index = (state.index - 1 + state.pool.length) % state.pool.length; renderCard(); }
 
-function startQuiz(){
-  quizOrder = shuffle([...cards.keys()]).slice(0, Math.min(10, cards.length));
-  quizIndex = 0; score = 0; answered = false;
-  $("resultBox").hidden = true;
-  renderQuiz();
+function startQuiz(stage='all'){
+  quiz.stage = stage;
+  let pool = stage==='all' ? state.cards : state.cards.filter(c=>c.category===stage);
+  quiz.pool = shuffle(pool).slice(0, Math.min(12, pool.length));
+  quiz.index = 0; quiz.score = 0; quiz.answered = false;
+  $('quizTitle').textContent = stage==='all' ? 'Quiz ze wszystkich pytań' : `Quiz: ${stage}`;
+  showScreen('quiz'); renderQuiz();
+}
+function makeOptions(card){
+  const wrong = shuffle(state.cards.filter(c=>c.id!==card.id).map(c=>c.answer)).slice(0,3);
+  return shuffle([card.answer, ...wrong]);
 }
 function renderQuiz(){
-  answered = false;
-  $("nextQuizBtn").disabled = true;
-  $("feedback").textContent = "";
-  $("feedback").className = "feedback";
-  const idx = quizOrder[quizIndex];
-  $("quizCounter").textContent = `Pytanie ${quizIndex + 1} / ${quizOrder.length}`;
-  $("quizQuestion").textContent = cards[idx].q;
-  const wrong = shuffle(cards.filter((_, i) => i !== idx).map(c => c.a)).slice(0, 3);
-  const options = shuffle([cards[idx].a, ...wrong]);
-  $("answers").innerHTML = options.map(opt => `<button class="answer-btn" data-answer="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join("");
-  document.querySelectorAll(".answer-btn").forEach(btn => btn.addEventListener("click", () => checkAnswer(btn, cards[idx].a)));
-}
-function checkAnswer(button, correct){
-  if(answered) return;
-  answered = true;
-  const chosen = button.dataset.answer;
-  document.querySelectorAll(".answer-btn").forEach(btn => {
-    btn.disabled = true;
-    if(btn.dataset.answer === correct) btn.classList.add("correct");
+  const card = quiz.pool[quiz.index];
+  quiz.answered = false;
+  $('quizQuestion').textContent = card.id + ') ' + card.question;
+  $('quizCounter').textContent = `${quiz.index+1} / ${quiz.pool.length}`;
+  $('quizScore').textContent = `Wynik: ${quiz.score}`;
+  $('quizProgress').style.width = `${((quiz.index+1)/quiz.pool.length)*100}%`;
+  $('quizFeedback').classList.add('hidden');
+  $('quizNextBtn').classList.add('hidden');
+  const options = $('quizOptions'); options.innerHTML = '';
+  makeOptions(card).forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option'; btn.textContent = opt;
+    btn.onclick = () => chooseAnswer(btn, opt, card.answer);
+    options.appendChild(btn);
   });
-  if(chosen === correct){
-    score++;
-    button.classList.add("correct");
-    $("feedback").textContent = "Dobrze!";
-    $("feedback").classList.add("good");
-  } else {
-    button.classList.add("wrong");
-    $("feedback").textContent = `Źle. Poprawna odpowiedź: ${correct}`;
-    $("feedback").classList.add("bad");
+}
+function chooseAnswer(btn, picked, correct){
+  if(quiz.answered) return;
+  quiz.answered = true;
+  document.querySelectorAll('.option').forEach(o => {
+    o.disabled = true;
+    if(o.textContent === correct) o.classList.add('correct');
+  });
+  if(picked === correct){ quiz.score++; btn.classList.add('correct'); $('quizFeedback').textContent = 'Dobrze ✅'; }
+  else { btn.classList.add('wrong'); $('quizFeedback').textContent = `Źle. Poprawna odpowiedź: ${correct}`; }
+  $('quizScore').textContent = `Wynik: ${quiz.score}`;
+  $('quizFeedback').classList.remove('hidden');
+  $('quizNextBtn').classList.remove('hidden');
+}
+function quizNext(){
+  if(quiz.index + 1 >= quiz.pool.length){
+    $('quizQuestion').textContent = `Koniec quizu — wynik: ${quiz.score}/${quiz.pool.length}`;
+    $('quizOptions').innerHTML = '';
+    $('quizFeedback').textContent = quiz.score === quiz.pool.length ? 'Idealnie. Wszystko umiesz 🔥' : 'Zapisz trudne pytania i powtórz fiszki.';
+    $('quizFeedback').classList.remove('hidden');
+    $('quizNextBtn').classList.add('hidden');
+    return;
   }
-  $("nextQuizBtn").disabled = false;
+  quiz.index++; renderQuiz();
 }
-function nextQuiz(){
-  quizIndex++;
-  if(quizIndex >= quizOrder.length){
-    const pct = Math.round((score / quizOrder.length) * 100);
-    best = Math.max(best, pct);
-    localStorage.setItem("quizBest", best);
-    updateStats();
-    $("resultBox").hidden = false;
-    $("resultBox").innerHTML = `<h2>Wynik: ${score}/${quizOrder.length} (${pct}%)</h2><p>${pct >= 80 ? "Elegancko, jesteś blisko gotowości." : "Powtórz fiszki i zrób quiz jeszcze raz."}</p>`;
-    startQuiz();
-  } else renderQuiz();
-}
-function renderList(filter=""){
-  const term = filter.toLowerCase().trim();
-  $("qaList").innerHTML = cards
-    .filter(c => !term || c.q.toLowerCase().includes(term) || c.a.toLowerCase().includes(term))
-    .map((c,i) => `<article class="qa-item"><h3>${i+1}. ${escapeHtml(c.q)}</h3><p><strong>Odp.:</strong> ${escapeHtml(c.a)}</p></article>`)
-    .join("") || `<p class="hint">Brak wyników.</p>`;
-}
-function escapeHtml(text){
-  return String(text).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-}
-
-document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => {
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-  tab.classList.add("active");
-  $(tab.dataset.view).classList.add("active");
-}));
-$("flashcard").addEventListener("click", () => { flipped = !flipped; renderCard(); });
-$("flashcard").addEventListener("keydown", e => { if(e.code === "Space"){ e.preventDefault(); flipped = !flipped; renderCard(); }});
-$("nextBtn").addEventListener("click", nextCard);
-$("prevBtn").addEventListener("click", prevCard);
-$("knowBtn").addEventListener("click", () => { known.add(order[current]); saveProgress(); nextCard(); });
-$("shuffleBtn").addEventListener("click", () => { order = shuffle(order); current = 0; flipped = false; renderCard(); });
-$("resetProgressBtn").addEventListener("click", () => { known.clear(); saveProgress(); updateStats(); });
-$("newQuizBtn").addEventListener("click", startQuiz);
-$("nextQuizBtn").addEventListener("click", nextQuiz);
-$("searchInput").addEventListener("input", e => renderList(e.target.value));
-
-document.addEventListener("keydown", e => {
-  if(document.activeElement.tagName === "INPUT") return;
-  if(e.key === "ArrowRight") nextCard();
-  if(e.key === "ArrowLeft") prevCard();
-});
-
-renderCard();
-renderList();
-startQuiz();
+init();
