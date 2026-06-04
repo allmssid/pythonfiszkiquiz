@@ -1,68 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fiszki i Quiz — Python / JS / Regex</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Języki interpretowane — fiszki i quiz</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="hero">
-      <div>
-        <p class="eyebrow">Nauka do testu</p>
-        <h1>Fiszki + Quiz</h1>
-        <p class="subtitle">Python, JavaScript, typy danych, obiekty, regex i podstawowe pojęcia.</p>
+  <header class="hero">
+    <div class="hero__content">
+      <p class="eyebrow">Nauka do kolokwium</p>
+      <h1>Języki interpretowane</h1>
+      <p class="subtitle">Interaktywne fiszki, quiz i szybka powtórka z pytań z pliku.</p>
+      <div class="stats">
+        <div><strong id="totalCards">0</strong><span>pytań</span></div>
+        <div><strong id="knownCount">0</strong><span>umiem</span></div>
+        <div><strong id="quizBest">0%</strong><span>najlepszy wynik</span></div>
       </div>
-      <div class="stats-card">
-        <span id="totalCards">30</span>
-        <small>pytań z PDF</small>
-      </div>
-    </header>
+    </div>
+  </header>
 
+  <main class="app">
     <nav class="tabs" aria-label="Tryby nauki">
       <button class="tab active" data-view="flashcards">Fiszki</button>
       <button class="tab" data-view="quiz">Quiz</button>
-      <button class="tab" data-view="learn">Baza odpowiedzi</button>
+      <button class="tab" data-view="list">Lista pytań</button>
     </nav>
 
-    <main>
-      <section id="flashcards" class="view active-view">
-        <div class="toolbar">
-          <input id="searchInput" type="search" placeholder="Szukaj po pytaniu lub odpowiedzi..." />
-          <select id="categoryFilter">
-            <option value="all">Wszystkie kategorie</option>
-          </select>
-          <button id="shuffleCards" class="secondary">Losuj kolejność</button>
-        </div>
-        <div id="cardsGrid" class="cards-grid"></div>
-      </section>
+    <section id="flashcards" class="view active">
+      <div class="toolbar">
+        <button id="shuffleBtn" class="btn secondary">Wymieszaj</button>
+        <button id="resetProgressBtn" class="btn ghost">Reset postępu</button>
+      </div>
 
-      <section id="quiz" class="view">
-        <div class="quiz-panel">
-          <div class="quiz-header">
-            <div>
-              <p class="eyebrow">Tryb sprawdzianu</p>
-              <h2 id="quizTitle">Pytanie 1</h2>
-            </div>
-            <div class="score-pill"><span id="score">0</span>/<span id="answered">0</span></div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span id="cardCounter">1 / 1</span><span id="progressText">0% przerobione</span></div>
+        <div class="progress"><div id="progressBar"></div></div>
+      </div>
+
+      <article class="flashcard" id="flashcard" tabindex="0" aria-label="Kliknij, aby odwrócić fiszkę">
+        <div class="flashcard__inner">
+          <div class="flashcard__side flashcard__front">
+            <span class="pill">Pytanie</span>
+            <h2 id="cardQuestion"></h2>
+            <p class="hint">Kliknij kartę albo naciśnij spację, żeby zobaczyć odpowiedź.</p>
           </div>
-          <div class="progress"><div id="progressBar"></div></div>
-          <p id="quizQuestion" class="quiz-question"></p>
-          <div id="quizOptions" class="options"></div>
-          <div id="feedback" class="feedback"></div>
-          <div class="quiz-actions">
-            <button id="nextQuestion" class="primary">Następne pytanie</button>
-            <button id="restartQuiz" class="secondary">Restart</button>
+          <div class="flashcard__side flashcard__back">
+            <span class="pill answer">Odpowiedź</span>
+            <h2 id="cardAnswer"></h2>
           </div>
         </div>
-      </section>
+      </article>
 
-      <section id="learn" class="view">
-        <div class="answer-list" id="answerList"></div>
-      </section>
-    </main>
-  </div>
+      <div class="actions">
+        <button id="prevBtn" class="btn secondary">← Poprzednia</button>
+        <button id="knowBtn" class="btn success">Umiem</button>
+        <button id="nextBtn" class="btn primary">Następna →</button>
+      </div>
+    </section>
+
+    <section id="quiz" class="view">
+      <div class="quiz-card">
+        <div class="quiz-top">
+          <span class="pill">Quiz</span>
+          <span id="quizCounter">Pytanie 1</span>
+        </div>
+        <h2 id="quizQuestion"></h2>
+        <div id="answers" class="answers"></div>
+        <div id="feedback" class="feedback"></div>
+        <div class="actions">
+          <button id="newQuizBtn" class="btn secondary">Nowy quiz</button>
+          <button id="nextQuizBtn" class="btn primary" disabled>Dalej</button>
+        </div>
+      </div>
+      <div class="result" id="resultBox" hidden></div>
+    </section>
+
+    <section id="list" class="view">
+      <div class="searchbox">
+        <input id="searchInput" type="search" placeholder="Szukaj pytania albo odpowiedzi…" />
+      </div>
+      <div id="qaList" class="qa-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Tip: ucz się najpierw fiszkami, potem sprawdź się w quizie.</p>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>

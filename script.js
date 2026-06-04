@@ -1,91 +1,154 @@
-const DATA = [
-{cat:'Historia języków',q:'Język programowania stworzony w 1995 roku przez Japończyka Yukihiro Matsumoto to:',a:'Ruby',opts:['Ruby','Python','Perl','JavaScript']},
-{cat:'Historia języków',q:'Język programowania, który powstał w 1987 roku, został stworzony przez Larry’ego Walla:',a:'Perl',opts:['Perl','Ruby','PHP','Lua']},
-{cat:'Historia języków',q:'Język, który został stworzony przez Brendana Eicha w firmie Netscape w 1995 to:',a:'JavaScript',opts:['JavaScript','Java','TypeScript','Python']},
-{cat:'Historia języków',q:'Twórcą języka Python jest:',a:'Guido van Rossum',opts:['Guido van Rossum','Yukihiro Matsumoto','Larry Wall','Brendan Eich']},
-{cat:'Python OOP',q:'Jaką nazwę nosi zwyczajowo uchwyt do obiektu, który jest przekazywany do metody instancji w Pythonie?',a:'self',opts:['self','this','object','me']},
-{cat:'Python OOP',q:'Jaką nazwę nosi metoda inicjacyjna w Pythonie?',a:'__init__',opts:['__init__','init()','constructor','__start__']},
-{cat:'Python OOP',q:'Przykładem metody specjalnej w Pythonie jest:',a:'Np. __init__, __str__, __repr__, __len__',opts:['__init__','start','main','method']},
-{cat:'Python OOP',q:'Które metody specjalne pozwalają na przekonwertowanie obiektu na łańcuch znaków?',a:'__str__ oraz __repr__',opts:['__str__ oraz __repr__','__int__ oraz __float__','__len__ oraz __size__','__get__ oraz __set__']},
-{cat:'Python kod',q:'Jaki błąd zawiera kod z class Kwadrat, def pole(this), this.x=10, print(Kwadrat.pole(k))?',a:'Kod nie ma błędu składniowego. Parametr nie musi nazywać się self — może nazywać się this. Wywołanie Kwadrat.pole(k) też zadziała i wypisze 100.',opts:['Nie ma błędu, wypisze 100','Brakuje słowa self, więc zawsze błąd','Nie można użyć return','Klasy w Pythonie nie mają metod']},
-{cat:'Python kod',q:'Co zostanie wypisane po kodzie: k = Kwadrat(10); print(k.pole(k)), gdy klasa nie ma __init__?',a:'Wystąpi TypeError, bo Kwadrat() nie przyjmuje argumentu 10. Dodatkowo metoda pole przyjmuje tylko self, więc k.pole(k) też byłoby błędne.',opts:['TypeError','100','10','None']},
-{cat:'Python typy',q:'com = 2+2J, zmienna com jest w Pythonie typu:',a:'complex',opts:['complex','int','float','str']},
-{cat:'Python typy',q:'a = True, zmienna a jest w Pythonie typu:',a:'bool',opts:['bool','int','str','tuple']},
-{cat:'Python typy',q:'b = 1.0, zmienna b jest w Pythonie typu:',a:'float',opts:['float','int','complex','bool']},
-{cat:'Python typy',q:'c = (1), zmienna c jest w Pythonie typu:',a:'int, bo nawiasy nie tworzą jednoelementowej krotki. Krotka to byłoby (1,).',opts:['int','tuple','list','set']},
-{cat:'Python typy',q:"Jaka jest zawartość zmiennej s po wykonaniu kodu: s = '123'; s[0] = 'x'?",a:'Nie powstanie nowa zawartość, bo stringi są niemutowalne. Wystąpi TypeError.',opts:['TypeError','x23','123','None']},
-{cat:'Python typy',q:'x = (1, 2, 3), x jest:',a:'tuple, czyli krotką',opts:['tuple','list','dict','set']},
-{cat:'Python typy',q:"y = {'1': 4, '2': 3}, y jest:",a:'dict, czyli słownikiem',opts:['dict','list','tuple','string']},
-{cat:'Python typy',q:'z = [1, 2, 3], z jest:',a:'list, czyli listą',opts:['list','tuple','dict','set']},
-{cat:'Python funkcje',q:'Funkcja, której głównym zadaniem jest przezroczyste opakowanie innej funkcji lub klasy, oznaczana symbolem @, to:',a:'dekorator',opts:['dekorator','iterator','generator','komparator']},
-{cat:'JavaScript',q:'let x = /d+/g, x jest w JS:',a:'wyrażeniem regularnym / obiektem RegExp. Uwaga: zapis /d+/ oznacza literę d, a /\\d+/ oznacza cyfry.',opts:['RegExp','Array','String','Number']},
-{cat:'JavaScript',q:'Są nieuporządkowaną kolekcją właściwości, które zawierają wartości typów podstawowych, innych obiektów lub funkcji:',a:'obiekty',opts:['obiekty','tablice','funkcje','regexy']},
-{cat:'JavaScript',q:'Jaką wartość ma x po kodzie: let lst = [1,2,3]; let x = lst[3];',a:'undefined, bo indeksy tablicy zaczynają się od 0, więc lst[3] nie istnieje.',opts:['undefined','3','null','Błąd składni']},
-{cat:'JavaScript',q:'Po wykonaniu kodu: let tab = [1,2,3,4]; let z = tab.indexOf(2); z zawiera:',a:'1, bo element 2 znajduje się pod indeksem 1.',opts:['1','2','0','-1']},
-{cat:'JavaScript',q:'Jaką wartość da wyrażenie: let x = "1"; x == 1;',a:'true, bo == wykonuje konwersję typów.',opts:['true','false','undefined','TypeError']},
-{cat:'JavaScript',q:'Jaką wartość da wyrażenie: let x = "1"; x === 1;',a:'false, bo === porównuje wartość i typ bez konwersji.',opts:['false','true','undefined','null']},
-{cat:'Regex',q:'Wyrażenie regularne /\\d{4}/ dopasowuje do łańcucha:',a:'cztery cyfry z rzędu, np. 2026.',opts:['cztery cyfry','dowolne cztery znaki','jedną literę d','cztery litery']},
-{cat:'Regex',q:'Przy wyrażeniu regularnym /x+/ znak + oznacza:',a:'jedno lub więcej wystąpień znaku x.',opts:['jedno lub więcej','zero lub jedno','dokładnie jedno','początek tekstu']},
-{cat:'Regex',q:'Przy wyrażeniu regularnym /x?/ znak ? oznacza:',a:'zero lub jedno wystąpienie znaku x.',opts:['zero lub jedno','jedno lub więcej','dowolny znak','koniec tekstu']},
-{cat:'Funkcje',q:'Połączenie obiektu funkcji z jej zasięgiem jest nazywane:',a:'domknięcie, czyli closure.',opts:['domknięcie / closure','rekurencja','dziedziczenie','referencja']},
-{cat:'JavaScript',q:'Słowo let wyznacza w JS:',a:'zmienną o zasięgu blokowym.',opts:['zmienną o zasięgu blokowym','stałą globalną','funkcję anonimową','klasę']}
+const cards = [
+  {q:"Język programowania stworzony w 1995 roku przez Japończyka Yukihiro Matsumoto to:", a:"Ruby"},
+  {q:"Język programowania, który powstał w 1987 roku, został stworzony przez Larry’ego Walla:", a:"Perl"},
+  {q:"Język, który został stworzony przez Brendona Eicha w firmie Netscape w 1995 to:", a:"JavaScript"},
+  {q:"Twórcą języka Python jest:", a:"Guido van Rossum"},
+  {q:"Jaką nazwę nosi zwyczajowo uchwyt do obiektu, który jest przekazywany do metody instancji (Python):", a:"self"},
+  {q:"Jaką nazwę nosi metoda inicjalizacyjna (Python):", a:"init()"},
+  {q:"Przykładem metody specjalnej jest (Python):", a:"str() (np. również init(), repr(), call())"},
+  {q:"Które metody specjalne pozwalają na przekonwertowanie obiektu na łańcuch znaków (Python):", a:"str() oraz repr()"},
+  {q:"Jaki błąd zawiera następujący kod (Python):", a:"Nie zawiera błędu (this może być nazwą parametru zamiast self)"},
+  {q:"Co zostanie wypisane na ekranie po wykonaniu następującego kodu (Python):", a:"TypeError"},
+  {q:"com = 2+2J, zmienna com jest w Pythonie typu:", a:"complex"},
+  {q:"a = True, zmienna a jest w Pythonie typu:", a:"bool"},
+  {q:"b = 1.0, zmienna b jest w Pythonie typu:", a:"float"},
+  {q:"c = (1), zmienna c jest w Pythonie typu:", a:"int"},
+  {q:"Jaka jest zawartość zmiennej s po wykonaniu następującego kodu (Python):", a:"TypeError"},
+  {q:"x = (1, 2, 3), x jest (Python):", a:"tuple"},
+  {q:"y = {'1': 4, '2': 3}, y jest (Python):", a:"dict"},
+  {q:"z = [1, 2, 3], z jest (Python):", a:"list"},
+  {q:"Funkcja, której głównym zadaniem jest przeźroczyste opakowanie innej funkcji lub klasy to, oznaczana symbolem @:", a:"Dekorator"},
+  {q:"let x = /\\d+/g, x jest (JS):", a:"RegExp"},
+  {q:"Są nieuporządkowaną kolekcją właściwości, które zawierają wartości typów podstawowych, innych obiektów lub funkcji (JS):", a:"Object"},
+  {q:"Jaką wartość ma zmienna x po wykonaniu następującego kodu:", a:"undefined"},
+  {q:"Po wykonaniu poniższego kodu (JS) z zawiera:", a:"1"},
+  {q:"Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):", a:"true"},
+  {q:"Jaką da wartość wyrażenie z ostatniej linijki poniższego kodu (JS):", a:"false"},
+  {q:"Wyrażenie regularne /\\d{4}/ dopasowuje do łańcucha:", a:"Dokładnie czterech cyfr"},
+  {q:"Przy wyrażeniu regularnym /x+/ znak + oznacza:", a:"Jedno lub więcej wystąpień"},
+  {q:"Przy wyrażeniu regularnym /x?/ znak ? oznacza:", a:"Zero lub jedno wystąpienie"},
+  {q:"Połączenie obiektu funkcji z jej zasięgiem (wystarcza zbiór wiązań zmiennych wolnych) jest nazywane:", a:"Domknięciem (closure)"},
+  {q:"Słowo let wyznacza w JS:", a:"Zasięg blokowy zmiennej"}
 ];
 
-let cards = [...DATA];
-const categories = [...new Set(DATA.map(x=>x.cat))];
-const categoryFilter = document.getElementById('categoryFilter');
-categories.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; categoryFilter.appendChild(o); });
-document.getElementById('totalCards').textContent = DATA.length;
+let order = [...cards.keys()];
+let current = 0;
+let flipped = false;
+let known = new Set(JSON.parse(localStorage.getItem("knownCards") || "[]"));
+let best = Number(localStorage.getItem("quizBest") || 0);
+let quizOrder = [];
+let quizIndex = 0;
+let score = 0;
+let answered = false;
 
-function renderCards(){
-  const grid=document.getElementById('cardsGrid'); grid.innerHTML='';
-  const term=document.getElementById('searchInput').value.toLowerCase();
-  const cat=categoryFilter.value;
-  cards.filter(item=>(cat==='all'||item.cat===cat)&&(item.q.toLowerCase().includes(term)||item.a.toLowerCase().includes(term)))
-  .forEach((item,i)=>{
-    const el=document.createElement('article'); el.className='flip-card';
-    el.innerHTML=`<div class="flip-inner"><div class="face front"><span class="badge">${item.cat}</span><p class="q">${item.q}</p><span class="hint">Kliknij, żeby zobaczyć odpowiedź</span></div><div class="face back"><span class="badge">Odpowiedź</span><p class="a">${item.a}</p><span class="hint">Kliknij, żeby wrócić</span></div></div>`;
-    el.addEventListener('click',()=>el.classList.toggle('flipped'));
-    grid.appendChild(el);
-  });
+const $ = (id) => document.getElementById(id);
+const shuffle = (arr) => arr.map(v => [Math.random(), v]).sort((a,b) => a[0]-b[0]).map(x => x[1]);
+
+function saveProgress(){ localStorage.setItem("knownCards", JSON.stringify([...known])); }
+function updateStats(){
+  $("totalCards").textContent = cards.length;
+  $("knownCount").textContent = known.size;
+  $("quizBest").textContent = `${best}%`;
 }
-document.getElementById('searchInput').addEventListener('input',renderCards);
-categoryFilter.addEventListener('change',renderCards);
-document.getElementById('shuffleCards').addEventListener('click',()=>{cards.sort(()=>Math.random()-0.5);renderCards();});
-
-function showView(view){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===view));
-  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active-view',v.id===view));
+function renderCard(){
+  const idx = order[current];
+  $("flashcard").classList.toggle("flipped", flipped);
+  $("cardQuestion").textContent = cards[idx].q;
+  $("cardAnswer").textContent = cards[idx].a;
+  $("cardCounter").textContent = `${current + 1} / ${cards.length}`;
+  const pct = Math.round(((current + 1) / cards.length) * 100);
+  $("progressBar").style.width = `${pct}%`;
+  $("progressText").textContent = `${pct}% przerobione`;
+  updateStats();
 }
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>showView(t.dataset.view)));
+function nextCard(){ current = (current + 1) % cards.length; flipped = false; renderCard(); }
+function prevCard(){ current = (current - 1 + cards.length) % cards.length; flipped = false; renderCard(); }
 
-let quizOrder=[], current=0, score=0, answered=0, locked=false;
-function startQuiz(){ quizOrder=[...DATA].sort(()=>Math.random()-0.5); current=0; score=0; answered=0; locked=false; renderQuiz(); }
+function startQuiz(){
+  quizOrder = shuffle([...cards.keys()]).slice(0, Math.min(10, cards.length));
+  quizIndex = 0; score = 0; answered = false;
+  $("resultBox").hidden = true;
+  renderQuiz();
+}
 function renderQuiz(){
-  locked=false; const item=quizOrder[current];
-  document.getElementById('quizTitle').textContent=`Pytanie ${current+1} z ${quizOrder.length}`;
-  document.getElementById('score').textContent=score; document.getElementById('answered').textContent=answered;
-  document.getElementById('progressBar').style.width=`${(answered/quizOrder.length)*100}%`;
-  document.getElementById('quizQuestion').textContent=item.q;
-  document.getElementById('feedback').textContent='';
-  const options=document.getElementById('quizOptions'); options.innerHTML='';
-  [...item.opts].sort(()=>Math.random()-0.5).forEach(opt=>{
-    const b=document.createElement('button'); b.className='option'; b.textContent=opt;
-    b.addEventListener('click',()=>chooseAnswer(b,opt,item)); options.appendChild(b);
+  answered = false;
+  $("nextQuizBtn").disabled = true;
+  $("feedback").textContent = "";
+  $("feedback").className = "feedback";
+  const idx = quizOrder[quizIndex];
+  $("quizCounter").textContent = `Pytanie ${quizIndex + 1} / ${quizOrder.length}`;
+  $("quizQuestion").textContent = cards[idx].q;
+  const wrong = shuffle(cards.filter((_, i) => i !== idx).map(c => c.a)).slice(0, 3);
+  const options = shuffle([cards[idx].a, ...wrong]);
+  $("answers").innerHTML = options.map(opt => `<button class="answer-btn" data-answer="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join("");
+  document.querySelectorAll(".answer-btn").forEach(btn => btn.addEventListener("click", () => checkAnswer(btn, cards[idx].a)));
+}
+function checkAnswer(button, correct){
+  if(answered) return;
+  answered = true;
+  const chosen = button.dataset.answer;
+  document.querySelectorAll(".answer-btn").forEach(btn => {
+    btn.disabled = true;
+    if(btn.dataset.answer === correct) btn.classList.add("correct");
   });
+  if(chosen === correct){
+    score++;
+    button.classList.add("correct");
+    $("feedback").textContent = "Dobrze!";
+    $("feedback").classList.add("good");
+  } else {
+    button.classList.add("wrong");
+    $("feedback").textContent = `Źle. Poprawna odpowiedź: ${correct}`;
+    $("feedback").classList.add("bad");
+  }
+  $("nextQuizBtn").disabled = false;
 }
-function chooseAnswer(button,opt,item){
-  if(locked) return; locked=true; answered++;
-  const ok=opt===item.opts[0]; if(ok) score++;
-  document.querySelectorAll('.option').forEach(b=>{ if(b.textContent===item.opts[0]) b.classList.add('correct'); });
-  if(!ok) button.classList.add('wrong');
-  document.getElementById('score').textContent=score; document.getElementById('answered').textContent=answered;
-  document.getElementById('progressBar').style.width=`${(answered/quizOrder.length)*100}%`;
-  document.getElementById('feedback').textContent= ok ? 'Dobrze ✅' : `Nie tym razem. Poprawna odpowiedź: ${item.a}`;
+function nextQuiz(){
+  quizIndex++;
+  if(quizIndex >= quizOrder.length){
+    const pct = Math.round((score / quizOrder.length) * 100);
+    best = Math.max(best, pct);
+    localStorage.setItem("quizBest", best);
+    updateStats();
+    $("resultBox").hidden = false;
+    $("resultBox").innerHTML = `<h2>Wynik: ${score}/${quizOrder.length} (${pct}%)</h2><p>${pct >= 80 ? "Elegancko, jesteś blisko gotowości." : "Powtórz fiszki i zrób quiz jeszcze raz."}</p>`;
+    startQuiz();
+  } else renderQuiz();
 }
-document.getElementById('nextQuestion').addEventListener('click',()=>{ current++; if(current>=quizOrder.length){ document.getElementById('feedback').textContent=`Koniec quizu! Wynik: ${score}/${quizOrder.length}`; current=0; startQuiz(); } else renderQuiz(); });
-document.getElementById('restartQuiz').addEventListener('click',startQuiz);
+function renderList(filter=""){
+  const term = filter.toLowerCase().trim();
+  $("qaList").innerHTML = cards
+    .filter(c => !term || c.q.toLowerCase().includes(term) || c.a.toLowerCase().includes(term))
+    .map((c,i) => `<article class="qa-item"><h3>${i+1}. ${escapeHtml(c.q)}</h3><p><strong>Odp.:</strong> ${escapeHtml(c.a)}</p></article>`)
+    .join("") || `<p class="hint">Brak wyników.</p>`;
+}
+function escapeHtml(text){
+  return String(text).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+}
 
-const answerList=document.getElementById('answerList');
-DATA.forEach((item,i)=>{const div=document.createElement('div');div.className='answer-item';div.innerHTML=`<h3>${i+1}. ${item.q}</h3><p><b>Odpowiedź:</b> ${item.a}</p>`;answerList.appendChild(div);});
-renderCards(); startQuiz();
+document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  tab.classList.add("active");
+  $(tab.dataset.view).classList.add("active");
+}));
+$("flashcard").addEventListener("click", () => { flipped = !flipped; renderCard(); });
+$("flashcard").addEventListener("keydown", e => { if(e.code === "Space"){ e.preventDefault(); flipped = !flipped; renderCard(); }});
+$("nextBtn").addEventListener("click", nextCard);
+$("prevBtn").addEventListener("click", prevCard);
+$("knowBtn").addEventListener("click", () => { known.add(order[current]); saveProgress(); nextCard(); });
+$("shuffleBtn").addEventListener("click", () => { order = shuffle(order); current = 0; flipped = false; renderCard(); });
+$("resetProgressBtn").addEventListener("click", () => { known.clear(); saveProgress(); updateStats(); });
+$("newQuizBtn").addEventListener("click", startQuiz);
+$("nextQuizBtn").addEventListener("click", nextQuiz);
+$("searchInput").addEventListener("input", e => renderList(e.target.value));
+
+document.addEventListener("keydown", e => {
+  if(document.activeElement.tagName === "INPUT") return;
+  if(e.key === "ArrowRight") nextCard();
+  if(e.key === "ArrowLeft") prevCard();
+});
+
+renderCard();
+renderList();
+startQuiz();
