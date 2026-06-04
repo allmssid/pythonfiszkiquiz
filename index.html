@@ -1,28 +1,68 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fiszki i Quiz</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fiszki i Quiz — Python / JS / Regex</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<h1>Fiszki i Quiz - Testy PDF</h1>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Nauka do testu</p>
+        <h1>Fiszki + Quiz</h1>
+        <p class="subtitle">Python, JavaScript, typy danych, obiekty, regex i podstawowe pojęcia.</p>
+      </div>
+      <div class="stats-card">
+        <span id="totalCards">30</span>
+        <small>pytań z PDF</small>
+      </div>
+    </header>
 
-<div class="tabs">
-<button onclick="showTab('flashcards')">Fiszki</button>
-<button onclick="showTab('quiz')">Quiz</button>
-</div>
+    <nav class="tabs" aria-label="Tryby nauki">
+      <button class="tab active" data-view="flashcards">Fiszki</button>
+      <button class="tab" data-view="quiz">Quiz</button>
+      <button class="tab" data-view="learn">Baza odpowiedzi</button>
+    </nav>
 
-<div id="flashcards"></div>
+    <main>
+      <section id="flashcards" class="view active-view">
+        <div class="toolbar">
+          <input id="searchInput" type="search" placeholder="Szukaj po pytaniu lub odpowiedzi..." />
+          <select id="categoryFilter">
+            <option value="all">Wszystkie kategorie</option>
+          </select>
+          <button id="shuffleCards" class="secondary">Losuj kolejność</button>
+        </div>
+        <div id="cardsGrid" class="cards-grid"></div>
+      </section>
 
-<div id="quiz" style="display:none">
-<h2>Quiz</h2>
-<div id="quizContainer"></div>
-<button onclick="checkQuiz()">Sprawdź wynik</button>
-<p id="result"></p>
-</div>
+      <section id="quiz" class="view">
+        <div class="quiz-panel">
+          <div class="quiz-header">
+            <div>
+              <p class="eyebrow">Tryb sprawdzianu</p>
+              <h2 id="quizTitle">Pytanie 1</h2>
+            </div>
+            <div class="score-pill"><span id="score">0</span>/<span id="answered">0</span></div>
+          </div>
+          <div class="progress"><div id="progressBar"></div></div>
+          <p id="quizQuestion" class="quiz-question"></p>
+          <div id="quizOptions" class="options"></div>
+          <div id="feedback" class="feedback"></div>
+          <div class="quiz-actions">
+            <button id="nextQuestion" class="primary">Następne pytanie</button>
+            <button id="restartQuiz" class="secondary">Restart</button>
+          </div>
+        </div>
+      </section>
 
-<script src="script.js"></script>
+      <section id="learn" class="view">
+        <div class="answer-list" id="answerList"></div>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
